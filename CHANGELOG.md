@@ -8,6 +8,7 @@
 * fix memory leak in ECDH-ES JWE encryption/decryption
 * fix rsa_q = NULL assignment in jwk.c _RSA_private_fields
 * fix memory allocation check (typo) in jwk.c (https://github.com/OpenIDC/cjose/security/code-scanning/2)
+* fix gcc10 errors for -Werror=ignored-qualifiers and remove unused includes ((https://github.com/OpenIDC/cjose/pull/26); thanks @s-ymgch228
 
 <a name="v0.6.2.3"></a>
 ## [v0.6.2.3](https://github.com/OpenIDC/cjose/compare/v0.6.2.2...v0.6.2.3)  (2024-04-24)

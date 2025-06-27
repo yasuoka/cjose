@@ -5,10 +5,14 @@
 * use OpenSSL 3.x non-deprecated APIs only; closes #25
 * add support for the "EdDSA" (Ed25519/Ed448) signing algorithm using CFRG Elliptic Curve Diffie-Hellman (ECDH)
 * remove support for importing JWS with alg "none"
+
+<a name="v0.6.2.4"></a>
+## [v0.6.2.4](https://github.com/OpenIDC/cjose/compare/v0.6.2.3...v0.6.2.4)  (2025-06-12)
 * fix memory leak in ECDH-ES JWE encryption/decryption
-* fix rsa_q = NULL assignment in jwk.c _RSA_private_fields
+* fix rsa_q = NULL initialization in _RSA_private_fields
 * fix memory allocation check (typo) in jwk.c (https://github.com/OpenIDC/cjose/security/code-scanning/2)
 * fix gcc10 errors for -Werror=ignored-qualifiers and remove unused includes ((https://github.com/OpenIDC/cjose/pull/26); thanks @s-ymgch228
+* re-generate automake/autoconf files with automake v1.17 and libtool v2.5.4
 
 <a name="v0.6.2.3"></a>
 ## [v0.6.2.3](https://github.com/OpenIDC/cjose/compare/v0.6.2.2...v0.6.2.3)  (2024-04-24)

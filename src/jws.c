@@ -155,6 +155,12 @@ static bool _cjose_jws_build_dat(cjose_jws_t *jws, const uint8_t *plaintext, siz
 ////////////////////////////////////////////////////////////////////////////////
 static bool _cjose_jws_build_dig(cjose_jws_t *jws, cjose_err *err)
 {
+    if (jws->dig != NULL)
+    {
+        cjose_get_dealloc()(jws->dig);
+        jws->dig = NULL;
+    }
+
     jws->dig_len = jws->hdr_b64u_len + jws->dat_b64u_len + 1;
     jws->dig = cjose_get_alloc()(jws->dig_len + 1);
     if (jws->dig == NULL)

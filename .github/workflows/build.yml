@@ -10,8 +10,8 @@ jobs:
       matrix:
         #os: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]
         os: [ubuntu-latest]
-        version: [3.0.15, 3.1.7, 3.2.3, 3.3.2, 3.4.0]
-        
+        version: [3.0.18, 3.2.6, 3.3.5, 3.4.3, 3.5.4, 3.6.0]
+
     name: ${{ matrix.os }} openssl-${{ matrix.version }}
     runs-on: ${{ matrix.os }}
 

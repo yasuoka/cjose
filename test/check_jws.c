@@ -109,7 +109,7 @@ static void _self_sign_self_verify(const char *plain1, const char *alg, cjose_er
 
     // create the JWS
     size_t plain1_len = strlen(plain1);
-    cjose_jws_t *jws1 = cjose_jws_sign(jwk, hdr, plain1, plain1_len, err);
+    cjose_jws_t *jws1 = cjose_jws_sign(jwk, hdr, (const uint8_t *)plain1, plain1_len, err);
     ck_assert_msg(NULL != jws1,
                   "cjose_jws_sign [%s] failed: "
                   "%s, file: %s, function: %s, line: %ld",
@@ -152,7 +152,7 @@ static void _self_sign_self_verify(const char *plain1, const char *alg, cjose_er
                   "length of verified plaintext does not match length of original, "
                   "expected: %lu, found: %lu",
                   strlen(plain1), plain2_len);
-    ck_assert_msg(strncmp(plain1, plain2, plain2_len) == 0, "verified plaintext does not match signed plaintext");
+    ck_assert_msg(strncmp(plain1, (const char *)plain2, plain2_len) == 0, "verified plaintext does not match signed plaintext");
 
     cjose_header_release(hdr);
     cjose_jws_release(jws1);
@@ -227,7 +227,7 @@ START_TEST(test_cjose_jws_self_sign_self_verify_many)
     {
         size_t len = random() % 1024;
         char *plain = (char *)malloc(len);
-        ck_assert_msg(RAND_bytes(plain, len) == 1, "RAND_bytes failed");
+        ck_assert_msg(RAND_bytes((unsigned char *)plain, len) == 1, "RAND_bytes failed");
         plain[len - 1] = 0;
         _self_sign_self_verify(plain, CJOSE_HDR_ALG_PS256, &err);
         _self_sign_self_verify(plain, CJOSE_HDR_ALG_PS384, &err);
@@ -280,7 +280,7 @@ START_TEST(test_cjose_jws_sign_with_bad_header)
                   err.message, err.file, err.function, err.line);
 
     // create a JWS
-    jws = cjose_jws_sign(jwk, hdr, plain, plain_len, &err);
+    jws = cjose_jws_sign(jwk, hdr, (const uint8_t *)plain, plain_len, &err);
     ck_assert_msg(NULL == jws, "cjose_jws_sign created with bad header");
     ck_assert_msg(err.code == CJOSE_ERR_INVALID_ARG, "cjose_jws_sign returned bad err.code (%i:%s)", err.code, err.message);
 
@@ -336,7 +336,7 @@ START_TEST(test_cjose_jws_sign_with_bad_key)
                       "%s, file: %s, function: %s, line: %ld",
                       err.message, err.file, err.function, err.line);
 
-        jws = cjose_jws_sign(jwk, hdr, plain, plain_len, &err);
+        jws = cjose_jws_sign(jwk, hdr, (const uint8_t *)plain, plain_len, &err);
         ck_assert_msg(NULL == jws, "cjose_jws_sign created with bad key");
         ck_assert_msg(err.code == CJOSE_ERR_INVALID_ARG,
                       "%d cjose_jws_sign returned bad err.code (%i:%s, file: %s, function: %s, line: %ld)", i, err.code,
@@ -345,7 +345,7 @@ START_TEST(test_cjose_jws_sign_with_bad_key)
         cjose_jwk_release(jwk);
     }
 
-    jws = cjose_jws_sign(NULL, hdr, plain, plain_len, &err);
+    jws = cjose_jws_sign(NULL, hdr, (const uint8_t *)plain, plain_len, &err);
     ck_assert_msg(NULL == jws, "cjose_jws_sign created with bad key");
     ck_assert_msg(err.code == CJOSE_ERR_INVALID_ARG, "cjose_jws_sign returned bad err.code (%i:%s)", err.code, err.message);
 
@@ -530,7 +530,7 @@ START_TEST(test_cjose_jws_import_get_plain_after_verify)
                   err.message, err.file, err.function, err.line);
 
     // compare the verified plaintext to the expected value
-    ck_assert_msg(strncmp(PLAIN_COMMON, plaintext, strlen(PLAIN_COMMON)) == 0,
+    ck_assert_msg(strncmp(PLAIN_COMMON, (const char *)plaintext, strlen(PLAIN_COMMON)) == 0,
                   "verified plaintext from JWS doesn't match the original");
 
     cjose_jws_release(jws);
@@ -648,7 +648,8 @@ START_TEST(test_cjose_jws_verify_hs256)
                   "length of verified plaintext does not match length of original, "
                   "expected: %lu, found: %lu",
                   strlen(PLAINTEXT), plain_len);
-    ck_assert_msg(strncmp(PLAINTEXT, plain, plain_len) == 0, "verified plaintext does not match signed plaintext: %s", plain);
+    ck_assert_msg(strncmp(PLAINTEXT, (const char *)plain, plain_len) == 0, "verified plaintext does not match signed plaintext: %s",
+                  plain);
 
     cjose_jwk_release(jwk);
     cjose_jws_release(jws);
@@ -725,7 +726,8 @@ START_TEST(test_cjose_jws_verify_rs256)
                   "length of verified plaintext does not match length of original, "
                   "expected: %lu, found: %lu",
                   strlen(PLAINTEXT), plain_len);
-    ck_assert_msg(strncmp(PLAINTEXT, plain, plain_len) == 0, "verified plaintext does not match signed plaintext: %s", plain);
+    ck_assert_msg(strncmp(PLAINTEXT, (const char *)plain, plain_len) == 0, "verified plaintext does not match signed plaintext: %s",
+                  plain);
 
     cjose_jws_release(jws_ok);
 
@@ -824,7 +826,8 @@ START_TEST(test_cjose_jws_verify_rs384)
                   "length of verified plaintext does not match length of original, "
                   "expected: %lu, found: %lu",
                   strlen(PLAINTEXT), plain_len);
-    ck_assert_msg(strncmp(PLAINTEXT, plain, plain_len) == 0, "verified plaintext does not match signed plaintext: %s", plain);
+    ck_assert_msg(strncmp(PLAINTEXT, (const char *)plain, plain_len) == 0, "verified plaintext does not match signed plaintext: %s",
+                  plain);
 
     cjose_jwk_release(jwk);
     cjose_jws_release(jws);
@@ -884,7 +887,8 @@ START_TEST(test_cjose_jws_verify_ec256)
                   "length of verified plaintext does not match length of original, "
                   "expected: %lu, found: %lu",
                   strlen(PLAINTEXT), plain_len);
-    ck_assert_msg(strncmp(PLAINTEXT, plain, plain_len) == 0, "verified plaintext does not match signed plaintext: %s", plain);
+    ck_assert_msg(strncmp(PLAINTEXT, (const char *)plain, plain_len) == 0, "verified plaintext does not match signed plaintext: %s",
+                  plain);
 
     cjose_jws_release(jws_ok);
 
@@ -973,7 +977,8 @@ START_TEST(test_cjose_jws_verify_EdDSA)
                   "length of verified plaintext does not match length of original, "
                   "expected: %lu, found: %lu",
                   strlen(PLAINTEXT), plain_len);
-    ck_assert_msg(strncmp(PLAINTEXT, plain, plain_len) == 0, "verified plaintext does not match signed plaintext: %s", plain);
+    ck_assert_msg(strncmp(PLAINTEXT, (const char *)plain, plain_len) == 0, "verified plaintext does not match signed plaintext: %s",
+                  plain);
     cjose_jws_release(jws_ok);
 
     static const char *JWS_TAMPERED_SIG = "eyJhbGciOiJFZERTQSJ9."
@@ -1043,7 +1048,7 @@ START_TEST(test_cjose_jws_sign_EdDSA)
 
     // create the JWS
     size_t plain1_len = strlen(PLAINTEXT);
-    cjose_jws_t *jws1 = cjose_jws_sign(jwk, hdr, PLAINTEXT, plain1_len, &err);
+    cjose_jws_t *jws1 = cjose_jws_sign(jwk, hdr, (const uint8_t *)PLAINTEXT, plain1_len, &err);
     ck_assert_msg(NULL != jws1,
                   "cjose_jws_sign [%s] failed: "
                   "%s, file: %s, function: %s, line: %ld",

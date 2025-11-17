@@ -360,7 +360,7 @@ START_TEST(test_cjose_jwk_create_EC_P521_random)
 }
 END_TEST
 
-const uint8_t *OCT_KEY = "pKE-eSbyFqPdtA5WzazKFg";
+const uint8_t *OCT_KEY = (const uint8_t *)"pKE-eSbyFqPdtA5WzazKFg";
 START_TEST(test_cjose_jwk_create_oct_spec)
 {
     cjose_err err;
@@ -368,7 +368,7 @@ START_TEST(test_cjose_jwk_create_oct_spec)
     uint8_t *k = NULL;
     size_t klen = 0;
 
-    cjose_base64url_decode(OCT_KEY, strlen(OCT_KEY), &k, &klen, &err);
+    cjose_base64url_decode((const char *)OCT_KEY, strlen((const char *)OCT_KEY), &k, &klen, &err);
 
     jwk = cjose_jwk_create_oct_spec(k, klen, &err);
     ck_assert(1 == jwk->retained);
@@ -558,7 +558,7 @@ START_TEST(test_cjose_jwk_to_json_oct)
     uint8_t *k = NULL;
     size_t klen = 0;
 
-    cjose_base64url_decode(OCT_KEY, strlen(OCT_KEY), &k, &klen, &err);
+    cjose_base64url_decode((const char *)OCT_KEY, strlen((const char *)OCT_KEY), &k, &klen, &err);
     jwk = cjose_jwk_create_oct_spec(k, klen, &err);
     cjose_get_dealloc()(k);
 
@@ -1457,8 +1457,8 @@ START_TEST(test_cjose_jwk_hkdf)
     size_t ephemeral_key_len = 32;
     uint8_t *ephemeral_key = (uint8_t *)malloc(ephemeral_key_len);
     memset(ephemeral_key, 0, ephemeral_key_len);
-    bool ok
-        = cjose_jwk_hkdf(EVP_sha256(), (uint8_t *)"", 0, (uint8_t *)"", 0, ikm, ikm_len, ephemeral_key, ephemeral_key_len, &err);
+    bool ok = cjose_jwk_hkdf(EVP_sha256(), (uint8_t *)"", 0, (uint8_t *)"", 0, (const uint8_t *)ikm, ikm_len, ephemeral_key,
+                             ephemeral_key_len, &err);
     ck_assert_msg(ok, "Failed to compute HKDF");
 
     // the following is the expected output of HKDF with the ikm given above,

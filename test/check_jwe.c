@@ -134,7 +134,8 @@ START_TEST(test_cjose_jwe_node_jose_encrypt_self_decrypt)
                   "length of decrypted plaintext does not match length of original, "
                   "expected: %lu, found: %lu",
                   strlen(PLAINTEXT), plain2_len);
-    ck_assert_msg(strncmp(PLAINTEXT, plain2, plain2_len) == 0, "decrypted plaintext does not match encrypted plaintext");
+    ck_assert_msg(strncmp(PLAINTEXT, (const char *)plain2, plain2_len) == 0,
+                  "decrypted plaintext does not match encrypted plaintext");
 
     cjose_get_dealloc()(plain2);
     cjose_jwk_release(jwk);
@@ -167,7 +168,7 @@ static void _self_encrypt_self_decrypt_with_key(const char *alg, const char *enc
 
     // create the JWE
     size_t plain1_len = strlen(plain1);
-    cjose_jwe_t *jwe1 = cjose_jwe_encrypt(jwk, hdr, plain1, plain1_len, &err);
+    cjose_jwe_t *jwe1 = cjose_jwe_encrypt(jwk, hdr, (const uint8_t *)plain1, plain1_len, &err);
     ck_assert_msg(NULL != jwe1, "cjose_jwe_encrypt [%s/%s] failed: %s, file: %s, function: %s, line: %ld", alg, enc, err.message,
                   err.file, err.function, err.line);
     // ck_assert(hdr == cjose_jwe_get_protected(jwe1));
@@ -199,7 +200,7 @@ static void _self_encrypt_self_decrypt_with_key(const char *alg, const char *enc
                   "length of decrypted plaintext does not match length of original, "
                   "expected: %lu, found: %lu",
                   strlen(plain1), plain2_len);
-    ck_assert_msg(strncmp(plain1, plain2, plain2_len) == 0, "decrypted plaintext does not match encrypted plaintext");
+    ck_assert_msg(strncmp(plain1, (const char *)plain2, plain2_len) == 0, "decrypted plaintext does not match encrypted plaintext");
 
     cjose_get_dealloc()(plain2);
     cjose_jwe_release(jwe2);
@@ -307,7 +308,7 @@ _self_encrypt_self_decrypt_with_key_iv(const char *alg, const char *enc, const c
 
     // create the JWE
     size_t plain1_len = strlen(plain1);
-    cjose_jwe_t *jwe1 = cjose_jwe_encrypt_iv(jwk, hdr, iv, iv_len, plain1, plain1_len, &err);
+    cjose_jwe_t *jwe1 = cjose_jwe_encrypt_iv(jwk, hdr, iv, iv_len, (const uint8_t *)plain1, plain1_len, &err);
     ck_assert_msg(NULL != jwe1, "cjose_jwe_encrypt failed: %s, file: %s, function: %s, line: %ld", err.message, err.file,
                   err.function, err.line);
     // ck_assert(hdr == cjose_jwe_get_protected(jwe1));
@@ -339,7 +340,7 @@ _self_encrypt_self_decrypt_with_key_iv(const char *alg, const char *enc, const c
                   "length of decrypted plaintext does not match length of original, "
                   "expected: %lu, found: %lu",
                   strlen(plain1), plain2_len);
-    ck_assert_msg(strncmp(plain1, plain2, plain2_len) == 0, "decrypted plaintext does not match encrypted plaintext");
+    ck_assert_msg(strncmp(plain1, (const char *)plain2, plain2_len) == 0, "decrypted plaintext does not match encrypted plaintext");
 
     cjose_get_dealloc()(plain2);
     cjose_jwe_release(jwe2);
@@ -441,7 +442,7 @@ START_TEST(test_cjose_jwe_self_encrypt_self_decrypt_many)
     {
         size_t len = random() % 1024;
         char *plain = (char *)malloc(len);
-        ck_assert_msg(RAND_bytes(plain, len) == 1, "RAND_bytes failed");
+        ck_assert_msg(RAND_bytes((unsigned char *)plain, len) == 1, "RAND_bytes failed");
         plain[len - 1] = 0;
         _self_encrypt_self_decrypt(plain);
         free(plain);
@@ -488,7 +489,7 @@ START_TEST(test_cjose_jwe_encrypt_with_bad_header)
                   err.message, err.file, err.function, err.line);
 
     // create a JWE
-    jwe = cjose_jwe_encrypt(jwk, hdr, plain, plain_len, &err);
+    jwe = cjose_jwe_encrypt(jwk, hdr, (const uint8_t *)plain, plain_len, &err);
     ck_assert_msg(NULL == jwe, "cjose_jwe_encrypt created with bad header");
     ck_assert_msg(err.code == CJOSE_ERR_INVALID_ARG, "cjose_jwe_encrypt returned bad err.code");
 
@@ -504,7 +505,7 @@ START_TEST(test_cjose_jwe_encrypt_with_bad_header)
                   err.message, err.file, err.function, err.line);
 
     // create a JWE
-    jwe = cjose_jwe_encrypt(jwk, hdr, plain, plain_len, &err);
+    jwe = cjose_jwe_encrypt(jwk, hdr, (const uint8_t *)plain, plain_len, &err);
     ck_assert_msg(NULL == jwe, "cjose_jwe_encrypt created with bad header");
     ck_assert_msg(err.code == CJOSE_ERR_INVALID_ARG, "cjose_jwe_encrypt returned bad err.code");
 
@@ -558,14 +559,14 @@ START_TEST(test_cjose_jwe_encrypt_with_bad_key)
                       "%s, file: %s, function: %s, line: %ld",
                       err.message, err.file, err.function, err.line);
 
-        jwe = cjose_jwe_encrypt(jwk, hdr, plain, plain_len, &err);
+        jwe = cjose_jwe_encrypt(jwk, hdr, (const uint8_t *)plain, plain_len, &err);
         ck_assert_msg(NULL == jwe, "cjose_jwe_encrypt created with bad key");
         ck_assert_msg(err.code == CJOSE_ERR_INVALID_ARG, "cjose_jwe_encrypt returned bad err.code");
 
         cjose_jwk_release(jwk);
     }
 
-    jwe = cjose_jwe_encrypt(NULL, hdr, plain, plain_len, &err);
+    jwe = cjose_jwe_encrypt(NULL, hdr, (const uint8_t *)plain, plain_len, &err);
     ck_assert_msg(NULL == jwe, "cjose_jwe_encrypt created with bad key");
     ck_assert_msg(err.code == CJOSE_ERR_INVALID_ARG, "cjose_jwe_encrypt returned bad err.code");
 
@@ -874,7 +875,8 @@ START_TEST(test_cjose_jwe_decrypt_aes)
                   "length of decrypted plaintext does not match length of original, "
                   "expected: %lu, found: %lu",
                   strlen(PLAINTEXT_S), plain1_len);
-    ck_assert_msg(strncmp(PLAINTEXT_S, plain1, plain1_len) == 0, "decrypted plaintext does not match encrypted plaintext");
+    ck_assert_msg(strncmp(PLAINTEXT_S, (const char *)plain1, plain1_len) == 0,
+                  "decrypted plaintext does not match encrypted plaintext");
 
     cjose_get_dealloc()(plain1);
     cjose_jwe_release(jwe);
@@ -1016,7 +1018,7 @@ START_TEST(test_cjose_jwe_decrypt_aes_gcm)
                   "length of decrypted plaintext does not match length of original, "
                   "expected: %lu, found: %lu",
                   strlen(plain1), plain2_len);
-    ck_assert_msg(strncmp(plain1, plain2, plain2_len) == 0, "decrypted plaintext does not match encrypted plaintext");
+    ck_assert_msg(strncmp(plain1, (const char *)plain2, plain2_len) == 0, "decrypted plaintext does not match encrypted plaintext");
 
     cjose_get_dealloc()(plain2);
     cjose_jwe_release(jwe1);
@@ -1178,7 +1180,7 @@ START_TEST(test_cjose_jwe_decrypt_rsa)
                       "length of decrypted plaintext does not match length of original, "
                       "expected: %lu, found: %lu",
                       strlen(JWE_RSA[i].plaintext), plain1_len);
-        ck_assert_msg(strncmp(JWE_RSA[i].plaintext, plain1, plain1_len) == 0,
+        ck_assert_msg(strncmp(JWE_RSA[i].plaintext, (const char *)plain1, plain1_len) == 0,
                       "decrypted plaintext does not match encrypted plaintext");
 
         cjose_get_dealloc()(plain1);

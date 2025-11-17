@@ -684,11 +684,15 @@ static bool _cjose_jwe_decrypt_ek_aes_kw(_jwe_int_recipient_t *recipient, cjose_
     return true;
 }
 
-static size_t _cjose_jwe_rsa_encrypt(
-    EVP_PKEY *key, unsigned char *ciphertext, unsigned char *plaintext, int plaintext_len, int padding, cjose_err *err)
+static size_t _cjose_jwe_rsa_encrypt(EVP_PKEY *key,
+                                     unsigned char *ciphertext,
+                                     size_t ciphertext_len,
+                                     unsigned char *plaintext,
+                                     int plaintext_len,
+                                     int padding,
+                                     cjose_err *err)
 {
     EVP_PKEY_CTX *ctx = NULL;
-    size_t ciphertext_len = 0;
 
     ctx = EVP_PKEY_CTX_new_from_pkey(NULL, key, NULL);
     if (ctx == NULL)
@@ -769,7 +773,8 @@ static bool _cjose_jwe_encrypt_ek_rsa_padding(
 #endif // HAVE_RSA_PKCS1_PADDING
 
     // encrypt the CEK using RSA v1.5 or OAEP padding
-    if (_cjose_jwe_rsa_encrypt((EVP_PKEY *)jwk->keydata, recipient->enc_key.raw, jwe->cek, jwe->cek_len, padding, err)
+    if (_cjose_jwe_rsa_encrypt((EVP_PKEY *)jwk->keydata, recipient->enc_key.raw, recipient->enc_key.raw_len, jwe->cek, jwe->cek_len,
+                               padding, err)
         != recipient->enc_key.raw_len)
     {
         return false;

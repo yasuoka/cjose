@@ -475,7 +475,6 @@ libcjose_la_SOURCES = \
 	src/header.c \
 	src/error.c \
 	src/include/concatkdf_int.h \
-	src/include/header_int.h \
 	src/include/jwk_int.h \
 	src/include/jwe_int.h \
 	src/include/jws_int.h \

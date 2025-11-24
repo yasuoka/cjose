@@ -22,7 +22,6 @@
 #include <openssl/core_names.h>
 
 #include "include/jwk_int.h"
-#include "include/header_int.h"
 #include "include/jws_int.h"
 
 ////////////////////////////////////////////////////////////////////////////////

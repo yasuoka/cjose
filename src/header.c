@@ -12,7 +12,6 @@
 #include <stddef.h>
 #include <jansson.h>
 #include "cjose/header.h"
-#include "include/header_int.h"
 
 const char *CJOSE_HDR_ALG = "alg";
 const char *CJOSE_HDR_ALG_ECDH_ES = "ECDH-ES";

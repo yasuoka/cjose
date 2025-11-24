@@ -24,7 +24,6 @@
 #include <openssl/param_build.h>
 
 #include "include/concatkdf_int.h"
-#include "include/header_int.h"
 #include "include/jwk_int.h"
 #include "include/jwe_int.h"
 #include "include/util_int.h"

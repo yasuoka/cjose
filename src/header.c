@@ -34,6 +34,7 @@ const char *CJOSE_HDR_ALG_ES256 = "ES256";
 const char *CJOSE_HDR_ALG_ES384 = "ES384";
 const char *CJOSE_HDR_ALG_ES512 = "ES512";
 const char *CJOSE_HDR_ALG_EdDSA = "EdDSA";
+const char *CJOSE_HDR_ALG_Ed25519 = "Ed25519";
 
 const char *CJOSE_HDR_ENC = "enc";
 const char *CJOSE_HDR_ENC_A128GCM = "A128GCM";

@@ -3,7 +3,7 @@
 <a name="v1.0.0"></a>
 ## [v1.0.0](https://github.com/OpenIDC/cjose/compare/v1.0.0...v0.6.2.4)  (2025-02-04)
 * use OpenSSL 3.x non-deprecated APIs only; closes #25
-* add support for the "EdDSA" (Ed25519/Ed448) signing algorithm using CFRG Elliptic Curve Diffie-Hellman (ECDH)
+* add support for the "EdDSA" (Ed25519/Ed448) and "Ed25519" signing algorithms using CFRG Elliptic Curve Diffie-Hellman (ECDH)
 * remove support for importing JWS with alg "none"
 
 <a name="v0.6.2.4"></a>

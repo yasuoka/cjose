@@ -119,7 +119,7 @@ static bool _cjose_jws_validate_hdr(cjose_jws_t *jws, cjose_err *err)
         jws->fns.sign = _cjose_jws_build_sig_ec;
         jws->fns.verify = _cjose_jws_verify_sig_ec;
     }
-    else if ((strcmp(alg, CJOSE_HDR_ALG_EdDSA) == 0))
+    else if ((strcmp(alg, CJOSE_HDR_ALG_EdDSA) == 0) || (strcmp(alg, CJOSE_HDR_ALG_Ed25519) == 0))
     {
         jws->fns.digest = _cjose_jws_build_dig_eddsa;
         jws->fns.sign = _cjose_jws_build_sig_eddsa;

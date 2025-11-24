@@ -84,6 +84,8 @@ extern const char *CJOSE_HDR_ALG_ES512;
 
 /** The JWS algorithm attribute value for EdDSA. */
 extern const char *CJOSE_HDR_ALG_EdDSA;
+/** The JWS algorithm attribute value for fully specified Ed25519. */
+extern const char *CJOSE_HDR_ALG_Ed25519;
 
 /** The JWE algorithm attribute value for "dir". */
 extern const char *CJOSE_HDR_ALG_DIR;

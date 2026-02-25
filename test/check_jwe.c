@@ -1205,7 +1205,7 @@ static void _cjose_test_json_serial(const char *json, const char *match_json, cj
                   err.message, err.file, err.function, err.line);
 
     size_t decoded_len;
-    char *decoded = cjose_jwe_decrypt_multi(jwe, cjose_multi_key_locator, rec, &decoded_len, &err);
+    uint8_t *decoded = cjose_jwe_decrypt_multi(jwe, cjose_multi_key_locator, rec, &decoded_len, &err);
     ck_assert_msg(NULL != decoded,
                   "failed to decrypt for multiple recipients: "
                   "%s, file: %s, function: %s, line: %ld",
@@ -1214,14 +1214,14 @@ static void _cjose_test_json_serial(const char *json, const char *match_json, cj
                   "decrypted plaintext does not match");
     cjose_get_dealloc()(decoded);
 
-    decoded = cjose_jwe_export_json(jwe, &err);
-    ck_assert_msg(NULL != decoded,
+    char *s_decoded = cjose_jwe_export_json(jwe, &err);
+    ck_assert_msg(NULL != s_decoded,
                   "failed to serialize JWE into json: "
                   "%s, file: %s, function: %s, line: %ld",
                   err.message, err.file, err.function, err.line);
-    ck_assert_msg(strcmp(decoded, match_json) == 0, "serialized json doesn't match expectation");
+    ck_assert_msg(strcmp(s_decoded, match_json) == 0, "serialized json doesn't match expectation");
 
-    cjose_get_dealloc()(decoded);
+    cjose_get_dealloc()(s_decoded);
 
     cjose_jwe_release(jwe);
 }
@@ -1400,7 +1400,8 @@ START_TEST(test_cjose_jwe_multiple_recipients)
                   "%s, file: %s, function: %s, line: %ld",
                   err.message, err.file, err.function, err.line);
 
-    cjose_jwe_t *jwe = cjose_jwe_encrypt_multi(rec, 2, protected_header, NULL, PLAINTEXT, strlen(PLAINTEXT) + 1, &err);
+    cjose_jwe_t *jwe
+        = cjose_jwe_encrypt_multi(rec, 2, protected_header, NULL, (const uint8_t *)PLAINTEXT, strlen(PLAINTEXT) + 1, &err);
     ck_assert_msg(NULL != jwe,
                   "failed to encrypt to multiple recipients:"
                   "%s, file: %s, function: %s, line: %ld",

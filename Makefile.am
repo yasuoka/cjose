@@ -6,7 +6,12 @@ ACLOCAL_AMFLAGS = -I m4
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = cjose.pc
 
-AM_CFLAGS = -std=gnu99 --pedantic -Wall -Werror -g -O2 -I$(top_builddir)/include @OPENSSL_CFLAGS@ @JANSSON_CFLAGS@
+AM_CFLAGS = -std=gnu99 --pedantic \
+			-DOPENSSL_NO_DEPRECATED -DOPENSSL_API_COMPAT=30000 \
+			-Wall -Werror -O3 \
+			-I$(top_builddir)/include \
+			@OPENSSL_CFLAGS@\
+			 @JANSSON_CFLAGS@
 
 lib_LTLIBRARIES = libcjose.la
 
